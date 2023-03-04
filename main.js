@@ -12,7 +12,7 @@ if (localStorage.getItem("all tasks")) {
   arrayOfObjects = JSON.parse(localStorage.getItem("all tasks"));
 }
 
-localStorage.setItem("all tasks", arrayOfObjects);
+localStorage.setItem("all tasks", JSON.stringify(arrayOfObjects));
 
 inp.addEventListener("keypress", function (event) {
   // If the user presses the "Enter" key on the keyboard
@@ -28,6 +28,7 @@ addBtn.addEventListener("click", function () {
   if (inp.value !== "") {
     addTaskToArray(inp.value);
     inp.value = "";
+    showTaskInPage();
   }
 });
 
@@ -35,28 +36,34 @@ function addTaskToArray(str) {
   let customObj = { ...obj };
   customObj.task = str;
   arrayOfObjects.push(customObj);
-  console.log(arrayOfObjects);
+  // console.log(arrayOfObjects);
   localStorage.setItem("all tasks", JSON.stringify(arrayOfObjects));
-  showTaskInPage(arrayOfObjects);
 }
 
-function showTaskInPage(arr) {
+function showTaskInPage() {
   let ul = document.querySelector("ul");
-  let li = document.createElement("li");
+  ul.innerHTML = ""; // to clear every task and write it again
 
-  let checkBox = document.createElement("input");
-  checkBox.type = "checkbox";
-  checkBox.id = "check";
+  if (arrayOfObjects.length > 0) {
+    arrayOfObjects.forEach((element) => {
+      let li = document.createElement("li");
 
-  let p = document.createElement("p");
-  p.innerText = arr[arr.length - 1].task;
+      let checkBox = document.createElement("input");
+      checkBox.type = "checkbox";
+      checkBox.id = "check";
 
-  let del = document.createElement("div");
-  del.classList = "del";
-  del.innerHTML = "X";
+      let p = document.createElement("p");
+      p.innerText = element.task;
 
-  ul.appendChild(li);
-  li.appendChild(checkBox);
-  li.appendChild(p);
-  li.appendChild(del);
+      var del = document.createElement("div");
+      del.classList = "del";
+      del.innerHTML = "X";
+
+      ul.appendChild(li);
+      li.appendChild(checkBox);
+      li.appendChild(p);
+      li.appendChild(del);
+    });
+  }
 }
+showTaskInPage(); // calling the function
